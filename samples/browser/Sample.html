@@ -112,11 +112,47 @@
 
     <!-- SDK USAGE -->
     <script>
+
         //Agent key words
-        const agentKeyWords = ["ofrecemos", "ofrecer", "toma de datos", "Oportunidad", "llamada", "ofrecerle", "como esta", "confirmar", "el motivo de esta llamada", "proceder"]
+        const agentKeyWords = [
+            "grabadas", "monitoreadas", "de acuerdo",
+            "ofrecemos", "ofrecer", "toma de datos", "Oportunidad", "llamada", "ofrecerle", "como esta",
+            "confirmar", "el motivo de esta llamada", "proceder", "podria", "me puede comentar", "me puede decir",
+            "adquirir", "tiene alguna duda", "tiene alguna inquietud", "comprende", "que duda tiene"
+        ]
 
         //Client key words
-        const clientKeyWords = ["gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"]
+        const clientKeyWords = [
+            "gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"
+        ]
+
+        //Warning words
+        const warningWords = ["cedula", "telefono", "direccion"]
+
+        //Conversation
+        let conversation = [{"person": "", "frase": "" }]
+
+        // On document load resolve the SDK dependecy
+        function Initialize(onComplete) {
+            require(["Speech.Browser.Sdk"], function (SDK) {
+                onComplete(SDK);
+            });
+        }
+
+        //Identify speaker
+        function RecognizePerson(frase) {
+            const agentWeight = agentKeyWords.filter((palabra)=>{
+                    return frase.indexOf(palabra) !== -1
+                })
+
+            const clientWeight = clientKeyWords.filter((palabra)=>{
+                    return frase.indexOf(palabra) !== -1
+                })
+
+            const speaker = agentWeight.length > clientWeight.length ? "Agent" : "Client"
+            console.log("agentWeight.length", agentWeight.length, "clientWeight.length", clientWeight.length, "-> Speaker: ", speaker)
+            return speaker
+        }
 
         var cleanedSpeech = '';
 
@@ -189,6 +225,10 @@
                  if (event instanceof SDK.RecognitionTriggeredEvent)
                 */
 
+                let person = ''
+                if(event.result) {
+                    person = RecognizePerson(event.result.NBest[0].Display)
+                }
 
                 setCleanedSpeech(event);
 
