@@ -13,6 +13,7 @@
             <td>
                 <h1 style="font-weight:500;">Speech Recognition</h1>
                 <h2 style="font-weight:500;">Microsoft Cognitive Services</h2>
+                <h3 style="font-weight:300;">Efectividad promedio 80%</h3>
             </td>
         </tr>
         <tr>
@@ -94,7 +95,7 @@
         </tr>
     </table>
 
-    <div>
+    <div style="max-width: 80%; font-weight:300; text-align: center;">
         <h3>Conversación</h3>
         <span id="cleanedSpeechDiv"></span>
     </div>
@@ -378,6 +379,7 @@
                 Setup();
                 hypothesisDiv.innerHTML = "";
                 phraseDiv.innerHTML = "";
+                cleanedSpeechDiv.innerHTML = "";
                 RecognizerStart(SDK, recognizer);
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
