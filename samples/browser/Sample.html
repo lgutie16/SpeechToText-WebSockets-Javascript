@@ -29,7 +29,7 @@
                     <option value="fr-FR">French - FR</option>
                     <option value="de-DE">German - DE</option>
                     <option value="it-IT">Italian - IT</option>
-                    <option value="es-ES"selected="selected">Spanish - ES</option>
+                    <option value="es-ES" selected="selected">Spanish - ES</option>
                 </select>
             </td>
         </tr>
@@ -92,17 +92,14 @@
             <td align="right">Status:</td>
             <td align="left"><span id="statusDiv"></span></td>
         </tr>
-        <tr>
-            <th>
-                Conversación
-            </th>
-        </tr>
-        <tr>
-            <td>
-                <span id="cleanedSpeechDiv"></span>
-            </td>
-        </tr>
     </table>
+
+    <div class="container">
+        <div class="jumbotron">
+            <h3>Conversación</h3>
+            <span id="cleanedSpeechDiv"></span>
+        </div>
+    </div>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
@@ -379,6 +376,9 @@
             stopBtn.disabled = true;
         }
     </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 
 </html>
