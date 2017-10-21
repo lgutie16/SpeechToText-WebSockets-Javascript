@@ -92,17 +92,12 @@
             <td align="right">Status:</td>
             <td align="left"><span id="statusDiv"></span></td>
         </tr>
-        <tr>
-            <th>
-                Conversación
-            </th>
-        </tr>
-        <tr>
-            <td>
-                <span id="cleanedSpeechDiv"></span>
-            </td>
-        </tr>
     </table>
+
+    <div>
+        <h3>Conversación</h3>
+        <span id="cleanedSpeechDiv"></span>
+    </div>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
@@ -164,7 +159,17 @@
         }
 
         function RecognizePerson() {
+            const agentWeight = agentKeyWords.filter((palabra)=>{
+                    return frase.indexOf(palabra) !== -1
+                })
 
+            const clientWeight = clientKeyWords.filter((palabra)=>{
+                    return frase.indexOf(palabra) !== -1
+                })
+
+            const speaker = agentWeight.length > clientWeight.length ? "Agent" : "Client"
+            console.log("agentWeight.length", agentWeight.length, "clientWeight.length", clientWeight.length, "-> Speaker: ", speaker)
+            return speaker
         }
 
         function CleanChat(objSpeech) {
@@ -230,7 +235,7 @@
                     person = RecognizePerson(event.result.NBest[0].Display)
                 }
 
-                setCleanedSpeech(event);
+                setCleanedSpeech(event, person);
 
                 switch (event.Name) {
                     case "RecognitionTriggeredEvent":
@@ -395,10 +400,10 @@
         }
 
 
-        function setCleanedSpeech(objEvent) {
+        function setCleanedSpeech(objEvent, person) {
             if(objEvent.result != undefined){
                 var arrSpeech = objEvent.result.NBest;
-                cleanedSpeech = cleanedSpeech + "<br><li>" + arrSpeech[0].Display + "</li>";
+                cleanedSpeech = cleanedSpeech + "<br><li>" + person + ":" + arrSpeech[0].Display + "</li>";
                 cleanedSpeechDiv.innerHTML = cleanedSpeech;
             }
 
