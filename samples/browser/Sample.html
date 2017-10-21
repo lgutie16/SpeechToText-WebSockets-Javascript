@@ -110,15 +110,26 @@
 
         //Agent key words
         const agentKeyWords = [
-            "grabadas", "monitoreadas", "de acuerdo",
+            //Greetings
+             "grabadas", "monitoreadas", "de acuerdo",
+            
+            //Summarize
+            "el señor identificado", "la señora identificado", "el señor de nombre", "la señora de nombre",
+            "cedula de ciudadania", "con direccion", "cuya direccion", 
+
+            //Getting data
             "ofrecemos", "ofrecer", "toma de datos", "Oportunidad", "llamada", "ofrecerle", "como esta",
             "confirmar", "el motivo de esta llamada", "proceder", "podria", "me puede comentar", "me puede decir",
-            "adquirir", "tiene alguna duda", "tiene alguna inquietud", "comprende", "que duda tiene"
+            "adquirir", "tiene alguna duda", "tiene alguna inquietud", "comprende", "que duda tiene", "con el", "con la", 
+            "lo llamo de", "la llamo de", "podria informarme", "podria decirme", "podria confirmarme", "telefono", "direccion", 
+            "cedula", "tu direccion de correspondencia", "su direccion", "residencia", "correo electronico", "entonces en le confirmó",
+            "entonces en le confirmó", "me repite nuevamente por favor", "nuevo servicio", "oportunidad unica", "me confirma su",
+            "enviaremos", "le enviaremos", "le estaremos"
         ]
 
         //Client key words
         const clientKeyWords = [
-            "gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"
+            "gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que", "ahora no"
         ]
 
         //Warning words
@@ -149,6 +160,16 @@
             return speaker
         }
 
+
+        function encripData(message) {
+            const encryptedAES = CryptoJS.AES.encrypt(message, "My Secret Passphrase");
+            console.log("ENCRIPT", encryptedAES)
+            const decryptedBytes = CryptoJS.AES.decrypt(encryptedAES, "My Secret Passphrase");
+            console.log("DECRIPT",decryptedBytes)
+            const plaintext = decryptedBytes.toString(CryptoJS.enc.Utf8);
+        }
+
+
         var cleanedSpeech = '';
 
         // On doument load resolve the SDK dependecy
@@ -158,18 +179,7 @@
             });
         }
 
-        function CleanChat(objSpeech) {
-
-        }
-
-        function getMostConfidentText() {
-
-        }
-
-        function cleanedConversation() {
-
-        }
-
+    
         // Setup the recongizer
         function RecognizerSetup(SDK, recognitionMode, language, format, subscriptionKey) {
 
@@ -217,9 +227,13 @@
                 */
 
                 let person = ''
+                let encripMessage = ''
                 if(event.result) {
-                    person = RecognizePerson(event.result.NBest[0].Display)
+                    person = RecognizePerson(event.result.NBest[0].Lexical)
+                    encripMessage = encripData(event.result.NBest[0].Lexical)
                 }
+
+                console.log(encripMessage)           
 
                 setCleanedSpeech(event, person);
 
@@ -282,6 +296,7 @@
         }
     </script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <!-- Browser Hooks -->
     <script>
         var startBtn, stopBtn, hypothesisDiv, cleanedSpeechDiv, phraseDiv, statusDiv;
@@ -364,6 +379,10 @@
                 startBtn.disabled = false;
             });
         });
+
+        function lookForInfo(){
+
+        }
 
         function Setup() {
             recognizer = RecognizerSetup(SDK, recognitionMode.value, languageOptions.value, SDK.SpeechResultFormat[formatOptions.value], key.value);
