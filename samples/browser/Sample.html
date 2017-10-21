@@ -4,26 +4,28 @@
 <head>
     <title>Speech Sample</title>
     <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 </head>
 
 <body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
-    <table width="100%">
+    <div class="row">
+    <div class="col-md-6">
+    <table class="table">
         <tr>
             <td></td>
             <td>
                 <h1 style="font-weight:500;">Speech Recognition</h1>
-                <h2 style="font-weight:500;">Microsoft Cognitive Services</h2>
                 <h3 style="font-weight:300;">Efectividad promedio 80%</h3>
             </td>
         </tr>
         <tr>
             <td align="right"><a href="https://www.microsoft.com/cognitive-services/en-us/sign-up" target="_blank">Subscription</a>:</td>
-            <td><input id="key" type="text" size="40" value="1e594011d0714aadb8735b3d57a49d4e"></td>
+            <td><input id="key" type="text" size="40" value="1e594011d0714aadb8735b3d57a49d4e" class="form-control"></td>
         </tr>
         <tr>
             <td align="right">Laguage:</td>
             <td align="left">
-                <select id="languageOptions">
+                <select id="languageOptions" class="form-control">
                     <option value="zh-CN">Chinese - CN</option>
                     <option value="en-GB">English - GB</option>
                     <option value="en-US">English - US</option>
@@ -37,7 +39,7 @@
         <tr>
             <td align="right">Recognition Mode:</td>
             <td align="left">
-                <select id="recognitionMode">
+                <select id="recognitionMode" class="form-control">
                     <option value="Interactive">Interactive</option>
                     <option value="Conversation" selected="selected">Conversation</option>
                     <option value="Dictation">Dictation</option>
@@ -47,7 +49,7 @@
         <tr>
             <td align="right">Format:</td>
             <td align="left">
-                <select id="formatOptions">
+                <select id="formatOptions" class="form-control">
                     <option value="Simple">Simple Result</option>
                     <option value="Detailed" selected="selected">Detailed Result</option>
                 </select>
@@ -56,7 +58,7 @@
         <tr>
             <td align="right">Input:</td>
             <td align="left">
-                <select id="inputSource">
+                <select id="inputSource" class="form-control">
                     <option value="Mic">Microphone</option>
                     <option value="File" selected="selected">Audio File</option>
                 </select>
@@ -65,8 +67,8 @@
         <tr>
             <td></td>
             <td>
-                <button id="startBtn" disabled="disabled">Start</button>
-                <button id="stopBtn" disabled="disabled">Stop</button>
+                <button id="startBtn" disabled="disabled" class="btn btn-success">Start</button>
+                <button id="stopBtn" disabled="disabled" class="btn btn-primary">Stop</button>
                 <input type="file" id="filePicker" accept=".wav" style="display:none" />
             </td>
         </tr>
@@ -76,11 +78,11 @@
                 <table>
                     <tr>
                         <td>Results:</td>
-                        <td>Current hypothesis:</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>
-                            <textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea>
+                            <textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px" class="form-control"></textarea>
                         </td>
                         <td style="vertical-align: top">
                             <span id="hypothesisDiv" style="width:200px;height:200px;display:block;"></span>
@@ -94,11 +96,17 @@
             <td align="left"><span id="statusDiv"></span></td>
         </tr>
     </table>
+     </div>
+     <div class="col-md-6">
 
     <div style="max-width: 80%; font-weight:300; text-align: center;">
         <h3>Conversación</h3>
-        <span id="cleanedSpeechDiv"></span>
+        <table class="table" id="cleanedSpeechDiv">
+        
+        </table>
     </div>
+     </div>
+</div>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
@@ -426,7 +434,7 @@
         function setCleanedSpeech(objEvent, person) {
             if(objEvent.result != undefined){
                 var arrSpeech = objEvent.result.NBest;
-                cleanedSpeech = cleanedSpeech + "<br><li><b>" + person + ":</b> " + arrSpeech[0].Display + "</li>";
+                cleanedSpeech = cleanedSpeech + "<tr><td><b>" + person + "</b></td><td> " + arrSpeech[0].Display + "</td></tr>";
                 cleanedSpeechDiv.innerHTML = cleanedSpeech;
             }
 
