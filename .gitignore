@@ -2,3 +2,7 @@
 /node_modules/
 # ignore auto-generated (transpiled) js files
 src/**/*.js
+/.idea/SpeechToText-WebSockets-Javascript.iml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
