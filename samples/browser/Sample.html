@@ -105,6 +105,9 @@
     <!-- SDK REFERENCE -->
     <script src="../../distrib/speech.browser.sdk.js"></script>
 
+    <!-- FileSaver -->
+    <script src="../functions/FileSaver.js"></script>
+
     <!-- SDK USAGE -->
     <script>
 
@@ -279,6 +282,17 @@
         function RecognizerStop(SDK, recognizer) {
             // recognizer.AudioSource.Detach(audioNodeId) can be also used here. (audioNodeId is part of ListeningStartedEvent)
             recognizer.AudioSource.TurnOff();
+            var file = new File([html2text(cleanedSpeech)], "hello world.txt", {type: "text/plain;charset=utf-8"});
+            saveAs(file);
+        }
+
+        // converts HTML to text using Javascript
+        function html2text(html) {
+            html = html.replace(/<br>/g, "\r\n");
+            var tag = document.createElement('div');
+            tag.innerHTML = html;
+
+            return tag.innerText;
         }
     </script>
 
