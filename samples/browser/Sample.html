@@ -92,6 +92,14 @@
             <td align="right">Status:</td>
             <td align="left"><span id="statusDiv"></span></td>
         </tr>
+        <tr class="conversation">
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td align="right">Status:</td>
+            <td align="left"><span id="statusDiv"></span></td>
+        </tr>
     </table>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
@@ -103,10 +111,23 @@
     <!-- SDK USAGE -->
     <script>
         //Agent key words
-        const agentKeyWords = ["ofrecemos", "ofrecer", "toma de datos", "Oportunidad", "llamada", "ofrecerle", "como esta", "confirmar", "el motivo de esta llamada", "proceder"]
+        const agentKeyWords = [
+            "grabadas", "monitoreadas", "de acuerdo",
+            "ofrecemos", "ofrecer", "toma de datos", "Oportunidad", "llamada", "ofrecerle", "como esta", 
+            "confirmar", "el motivo de esta llamada", "proceder", "podria", "me puede comentar", "me puede decir",
+             "adquirir", "tiene alguna duda", "tiene alguna inquietud", "comprende", "que duda tiene"
+        ]
 
         //Client key words
-        const clientKeyWords = ["gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"]
+        const clientKeyWords = [
+            "gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"
+        ]
+
+        //Warning words
+        const warningWords = ["cedula", "telefono", "direccion"]
+
+        //Conversation
+        let conversation = [{"person": "", "frase": "" }]
 
         // On doument load resolve the SDK dependecy
         function Initialize(onComplete) {
@@ -115,20 +136,33 @@
             });
         }
 
-        function RecognizePerson() {
+        //Identify speaker
+        function RecognizePerson(frase) {
+            const agentWeight = agentKeyWords.filter((palabra)=>{
+                 return frase.indexOf(palabra) !== -1                
+            })
 
+            const clientWeight = clientKeyWords.filter((palabra)=>{
+                 return frase.indexOf(palabra) !== -1                
+            })
+
+            const speaker = agentWeight.length > clientWeight.length ? "Agent" : "Client"
+            console.log("agentWeight.length", agentWeight.length, "clientWeight.length", clientWeight.length, "-> Speaker: ", speaker)
+            return speaker            
         }
 
-        function CleanChat() {
-
+        //Clean conversation to show in dom and save in file
+        function CleanChat(frase) {
+            const speaker = RecognizePerson(frase.text)
+            conversation = [...conversation, {"person": speaker, "frase": frase.text}]
+            return conversation
         }
 
-        function getMostConfidentText() {
-
-        }
-
-        function cleanedConversation() {
-
+        function printConversation(conversation) {
+            const secondHand = document.querySelector('.conversation')
+            conversation.map((frase)=> {
+                console.log()
+            })
         }
 
         // Setup the recongizer
@@ -175,6 +209,12 @@
                  Alternative syntax for typescript devs.
                  if (event instanceof SDK.RecognitionTriggeredEvent)
                 */
+                console.log(event.result)
+                let person = ''
+                if(event.result) {
+                   person = RecognizePerson(event.result.NBest[0].Display)
+                }
+                console.log(person)
                 switch (event.Name) {
                     case "RecognitionTriggeredEvent":
                         UpdateStatus("Initializing");
