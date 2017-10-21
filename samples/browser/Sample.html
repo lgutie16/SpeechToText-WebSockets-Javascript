@@ -158,20 +158,6 @@
             });
         }
 
-        function RecognizePerson() {
-            const agentWeight = agentKeyWords.filter((palabra)=>{
-                    return frase.indexOf(palabra) !== -1
-                })
-
-            const clientWeight = clientKeyWords.filter((palabra)=>{
-                    return frase.indexOf(palabra) !== -1
-                })
-
-            const speaker = agentWeight.length > clientWeight.length ? "Agent" : "Client"
-            console.log("agentWeight.length", agentWeight.length, "clientWeight.length", clientWeight.length, "-> Speaker: ", speaker)
-            return speaker
-        }
-
         function CleanChat(objSpeech) {
 
         }
@@ -403,7 +389,7 @@
         function setCleanedSpeech(objEvent, person) {
             if(objEvent.result != undefined){
                 var arrSpeech = objEvent.result.NBest;
-                cleanedSpeech = cleanedSpeech + "<br><li>" + person + ":" + arrSpeech[0].Display + "</li>";
+                cleanedSpeech = cleanedSpeech + "<br><li><b>" + person + ":</b> " + arrSpeech[0].Display + "</li>";
                 cleanedSpeechDiv.innerHTML = cleanedSpeech;
             }
 
