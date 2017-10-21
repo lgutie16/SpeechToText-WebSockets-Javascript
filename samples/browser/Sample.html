@@ -25,11 +25,11 @@
                 <select id="languageOptions">
                     <option value="zh-CN">Chinese - CN</option>
                     <option value="en-GB">English - GB</option>
-                    <option value="en-US" selected="selected">English - US</option>
+                    <option value="en-US">English - US</option>
                     <option value="fr-FR">French - FR</option>
                     <option value="de-DE">German - DE</option>
                     <option value="it-IT">Italian - IT</option>
-                    <option value="es-ES">Spanish - ES</option>
+                    <option value="es-ES"selected="selected">Spanish - ES</option>
                 </select>
             </td>
         </tr>
@@ -38,7 +38,7 @@
             <td align="left">
                 <select id="recognitionMode">
                     <option value="Interactive">Interactive</option>
-                    <option value="Conversation">Conversation</option>
+                    <option value="Conversation" selected="selected">Conversation</option>
                     <option value="Dictation">Dictation</option>
                 </select>
             </td>
@@ -47,8 +47,8 @@
             <td align="right">Format:</td>
             <td align="left">
                 <select id="formatOptions">
-                    <option value="Simple" selected="selected">Simple Result</option>
-                    <option value="Detailed">Detailed Result</option>
+                    <option value="Simple">Simple Result</option>
+                    <option value="Detailed" selected="selected">Detailed Result</option>
                 </select>
             </td>
         </tr>
@@ -56,8 +56,8 @@
             <td align="right">Input:</td>
             <td align="left">
                 <select id="inputSource">
-                    <option value="Mic" selected="selected">Microphone</option>
-                    <option value="File">Audio File</option>
+                    <option value="Mic">Microphone</option>
+                    <option value="File" selected="selected">Audio File</option>
                 </select>
             </td>
         </tr>
@@ -92,6 +92,16 @@
             <td align="right">Status:</td>
             <td align="left"><span id="statusDiv"></span></td>
         </tr>
+        <tr>
+            <th>
+                Conversación
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <span id="cleanedSpeechDiv"></span>
+            </td>
+        </tr>
     </table>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
@@ -108,6 +118,8 @@
         //Client key words
         const clientKeyWords = ["gracias", "no gracias", "me interesa", "no me interesa", "tengo una inquietud", "pero es que"]
 
+        var cleanedSpeech = '';
+
         // On doument load resolve the SDK dependecy
         function Initialize(onComplete) {
             require(["Speech.Browser.Sdk"], function (SDK) {
@@ -119,7 +131,7 @@
 
         }
 
-        function CleanChat() {
+        function CleanChat(objSpeech) {
 
         }
 
@@ -170,11 +182,16 @@
 
         // Start the recognition
         function RecognizerStart(SDK, recognizer) {
+
             recognizer.Recognize((event) => {
                 /*
                  Alternative syntax for typescript devs.
                  if (event instanceof SDK.RecognitionTriggeredEvent)
                 */
+
+
+                setCleanedSpeech(event);
+
                 switch (event.Name) {
                     case "RecognitionTriggeredEvent":
                         UpdateStatus("Initializing");
@@ -236,11 +253,12 @@
 
     <!-- Browser Hooks -->
     <script>
-        var startBtn, stopBtn, hypothesisDiv, phraseDiv, statusDiv;
+        var startBtn, stopBtn, hypothesisDiv, cleanedSpeechDiv, phraseDiv, statusDiv;
         var key, languageOptions, formatOptions, recognitionMode, inputSource, filePicker;
         var SDK;
         var recognizer;
         var previousSubscriptionKey;
+        var cleanedSpeech;
 
         document.addEventListener("DOMContentLoaded", function () {
             createBtn = document.getElementById("createBtn");
@@ -255,6 +273,7 @@
             inputSource = document.getElementById("inputSource");
             recognitionMode = document.getElementById("recognitionMode");
             filePicker = document.getElementById('filePicker');
+            cleanedSpeechDiv = document.getElementById('cleanedSpeechDiv');
 
             languageOptions.addEventListener("change", Setup);
             formatOptions.addEventListener("change", Setup);
@@ -333,6 +352,16 @@
             if (length > 403) {
                 hypothesisDiv.innerHTML = "..." + hypothesisDiv.innerHTML.substr(length - 400, length);
             }
+        }
+
+
+        function setCleanedSpeech(objEvent) {
+            if(objEvent.result != undefined){
+                var arrSpeech = objEvent.result.NBest;
+                cleanedSpeech = cleanedSpeech + "<br><li>" + arrSpeech[0].Display + "</li>";
+                cleanedSpeechDiv.innerHTML = cleanedSpeech;
+            }
+
         }
 
         function OnSpeechEndDetected() {
